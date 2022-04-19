@@ -55,7 +55,6 @@ ThoughtSchema.virtual('reactionCount').get(function () {
   return this.reactions.length;
 });
 
-// Create the Thought model using the Thought
 const Thought = model('Thought', ThoughtSchema);
 
 // export the Thought model
