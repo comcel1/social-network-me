@@ -10,12 +10,11 @@ const userController = {
   },
 
   // get one user by id
-  getUserById(req, res) {
-    User.findOne({ _id: params.id })
-      .populate({
-        path: 'thoughts',
-        select: '-__v',
-      })
+  getUserById({ params }, res) {
+    User.findOne({ _id: params.userId })
+      .populate({ path: 'thoughts' })
+      .populate({ path: 'friends' })
+      .select('-__v')
       .then((userData) => {
         if (!userData) {
           res.status(404).json({ message: 'No user found with this id!' });
@@ -30,12 +29,12 @@ const userController = {
   createUser({ body }, res) {
     User.create(body)
       .then((userData) => res.json(userData))
-      .catch((err) => res.json(err));
+      .catch((err) => res.status(400).json(err));
   },
 
   // update user
   updateUser({ params, body }, res) {
-    User.findOneAndUpdate({ _id: params.id }, body, {
+    User.findOneAndUpdate({ _id: params.userId }, body, {
       new: true,
       runValidators: true,
     })
@@ -51,9 +50,20 @@ const userController = {
 
   // delete user
   deleteUser({ params }, res) {
-    User.findOneAuserData({ _id: params.userData })
-      .then((userData) => res.json(userData))
-      .catch((err) => res.json(err));
+    User.findOneAndDelete({ _id: params.userId })
+      .then((userData) => {
+        if (!userData) {
+          res.status(404).json({ message: 'No user found with this id!' });
+          return;
+        }
+        // Thought.deleteMany({ username: userData.username })
+        //   .then(
+        //     res.json({ message: 'User and thoughts successfully deleted.' })
+        //   )
+        //   .catch((err) => res.status(400).json(err));
+        res.json(userData);
+      })
+      .catch((err) => res.status(400).json(err));
   },
 };
 

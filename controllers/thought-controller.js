@@ -12,10 +12,6 @@ const thoughtController = {
   // get one thought
   getOnethought(req, res) {
     Thought.findOne({ _id: params.id })
-      .populate({
-        path: 'thoughts',
-        select: '-__v',
-      })
       .then((userData) => {
         if (!userData) {
           res.status(404).json({ message: 'No user found with this id!' });
@@ -55,6 +51,7 @@ const thoughtController = {
       .then((userData) => res.json(userData))
       .catch((err) => res.json(err));
   },
+
   // add reaction
   // delete reaction
 };
